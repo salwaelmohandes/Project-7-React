@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './css/index.css';
-import { Route, BrowserRouter, Switch, NavLink, Redirect } from 'react-router-dom';
+import { Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 import apiKey from './apiKey';
 
 // App components
 import SearchForm from './components/SearchForm';
 import PhotoList from './components/PhotoList';
-import NoPhotos from './components/NoPhotos';
+import PageNotFound from './components/PageNotFound';
 import Destinations from './components/Destinations'
 import axios from 'axios';
 
@@ -17,35 +17,48 @@ export default class App extends Component  {
     this.state = {
       photos:[],
       loading: true,
-      input:'',
-      sharm: [],
+      title:'',
+      sharmElSheikh: [],
       taba: [],
       hurgada: []
     };
   }
 
   componentDidMount() {
-    let taba = this.performSearch("Taba");
-    let hurgada = this.performSearch("Hurgada");
-    let sharm = this.performSearch("Sharm");
-    // load three main search results
-    this.setState({
-      sharm: sharm,
-      hurgada: hurgada,
-      taba: taba
-    });
-    console.log(this.state);
+    this.performSearch("SharmElSheikh");
+    this.performSearch("Hurgada");
+    this.performSearch("Taba");
   }
 
-  performSearch = (query) => {
+  performSearch = (query = "SharmElSheikh") => {
+    this.setState({ loading: true });
     axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
     .then(response => {
-      this.setState({
-        title: query,
-        photos: response.data.photos.photo,
-        loading: false
-      }); 
-      return this.state.photos;
+      if (query === "SharmElSheikh") {
+        this.setState({
+          title: query,
+          sharmElSheikh: response.data.photos.photo,
+          loading: false
+        });
+      } else if (query === "Hurgada") {
+        this.setState({
+          title: query,
+          hurgada: response.data.photos.photo,
+          loading: false
+        });
+      } else if (query === "Taba") {
+        this.setState({
+          title: query,
+          taba: response.data.photos.photo,
+          loading: false
+        });
+      } else {
+        this.setState({
+          title: query,
+          photos: response.data.photos.photo,
+          loading: false
+        });
+      }
     })
     .catch(error =>  {
       console.log('Error fetching and parsing data', error);
@@ -53,7 +66,6 @@ export default class App extends Component  {
   }
 
   render() {
-  // const  { photos } = this.state.photos;  
     return (
       <BrowserRouter>
         <div>
@@ -61,26 +73,35 @@ export default class App extends Component  {
             <div className="inner">
               <h1 className="main-title">Egypt Attractions</h1>
               <SearchForm onSearch={this.performSearch} /> 
-              {/* <Destinations onClick={this.performSearch} />      */}
             </div>   
           </div> 
           <div className="main-content">
             <Destinations />
-            <Switch>
-            {(this.state.loading) 
+            {(this.state.loading)
               ? <p>Loading...</p>
-              : <PhotoList data={this.state.photos} title={this.state.title} />
-              } 
-              <Route exact path='/' 
-                     render={ () => <Redirect to={'/Sharm'} /> } />
-              <Route path="/Sharm" 
-                     render={(props) => (<PhotoList {...props} data={this.state.photos} title="Sharm"/>)} />
-              <Route path="/Hurgada"
-                     render={(props) => (<PhotoList {...props} data={this.state.photos} title="Hurgada"/>)} />          
-              <Route path="/Taba"
-                     render={(props) => (<PhotoList {...props} data={this.state.photos} title="Taba"/>)} />
-              <Route component={NoPhotos} />             
-            </Switch>
+              : <Switch>
+                <Route exact path='/' 
+                      render={ () => <Redirect to={'/SharmElSheikh'} /> } />
+                <Route path="/SharmElSheikh" 
+                      render={(props) => <PhotoList {...props} 
+                                            data={this.state.sharmElSheikh} 
+                                            title="SharmElSheikh" /> } />
+                <Route path="/Hurgada"
+                      render={(props) => <PhotoList {...props} 
+                                            data={this.state.hurgada} 
+                                            title="Hurgada" />} />          
+                <Route path="/Taba"
+                      render={(props) => <PhotoList {...props} 
+                                            data={this.state.taba} 
+                                            title="Taba" />} />
+                <Route path="/search/:query" 
+                      render={(props) => <PhotoList {...props} 
+                                            data={this.state.photos} 
+                                            title={this.state.title} 
+                                            loading={this.state.loading} />} /> 
+                <Route component={PageNotFound} />             
+              </Switch>
+            }
           </div>
         </div> 
       </BrowserRouter>

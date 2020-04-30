@@ -5,3 +5,5 @@ The file should look like this:
 const apiKey = 'YOUR API KEY';
 export default apiKey;
 
+Run npm install to download dependencies.
+Run npm start to start React Gallery App.

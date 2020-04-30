@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
-export default class SearchForm extends Component {
+class SearchForm extends Component {
     state = {
       searchText: ''
     }
     
     onSearchChange = e => {
-      this.setState({ searchText: e.target.value });
+      this.setState({ 
+        searchText: e.target.value 
+      });
     }
     
     handleSubmit = e => {
       e.preventDefault();
       this.props.onSearch(this.query.value);
-      this.setState({ searchText: e.target.value })
+      let path = `/search/${this.query.value}`;
+      this.props.history.push(path);
       e.currentTarget.reset();
     }
     
@@ -28,8 +32,11 @@ export default class SearchForm extends Component {
           <i className="material-icons icn-search">search</i>
           </button>
         </form>             
-      );
-    }
+    );
   }
+}
+ 
+export default withRouter(SearchForm);
+
 
 
