@@ -2,6 +2,8 @@ import React from 'react';
 
 import { NavLink } from 'react-router-dom';
 
+// create a nav component for the app navigation link.
+
 const Destinations = () => ( 
   <div>
     <nav className="main-nav">

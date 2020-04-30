@@ -19,8 +19,8 @@ export default class App extends Component  {
       loading: true,
       title:'',
       sharmElSheikh: [],
-      taba: [],
-      hurgada: []
+      hurgada: [],
+      taba: []      
     };
   }
 
@@ -29,6 +29,8 @@ export default class App extends Component  {
     this.performSearch("Hurgada");
     this.performSearch("Taba");
   }
+
+  // fetching data from Flicker API using Axios.
 
   performSearch = (query = "SharmElSheikh") => {
     this.setState({ loading: true });
@@ -64,6 +66,9 @@ export default class App extends Component  {
       console.log('Error fetching and parsing data', error);
     });
   }
+
+  // Set up the Routes and Switch between three default topics, 
+  // the search Route and the error 404 Route.
 
   render() {
     return (
