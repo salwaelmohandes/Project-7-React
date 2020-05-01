@@ -7,7 +7,8 @@ import apiKey from './apiKey';
 import SearchForm from './components/SearchForm';
 import PhotoList from './components/PhotoList';
 import PageNotFound from './components/PageNotFound';
-import Destinations from './components/Destinations'
+import Destinations from './components/Destinations';
+
 import axios from 'axios';
 
 export default class App extends Component  {
@@ -99,7 +100,7 @@ export default class App extends Component  {
                       render={(props) => <PhotoList {...props} 
                                             data={this.state.taba} 
                                             title="Taba" />} />
-                <Route path="/search/:query" 
+                <Route exact path="/search/:query" 
                       render={(props) => <PhotoList {...props} 
                                             data={this.state.photos} 
                                             title={this.state.title} 
